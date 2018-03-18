@@ -1,20 +1,34 @@
-# atlassian-connect-express: Node.js package for Express based Atlassian Add-ons
+# atlassian-connect-express: Node.js package for Express.js based Atlassian Add-ons
 
-[![Build Status](https://drone.io/bitbucket.org/atlassian/atlassian-connect-express/status.png)](https://drone.io/bitbucket.org/atlassian/atlassian-connect-express/latest)
+![build status](https://bitbucket-badges.atlassian.io/badge/atlassian/atlassian-connect-express.svg)
 
-`atlassian-connect-express` is a toolkit for creating [Atlassian Connect](https://developer.atlassian.com/display/AC/Atlassian+Connect) based Add-ons with [Node.js](http://nodejs.org/). Atlassian Connect is a distributed component model for creating Atlassian add-ons. Add-ons built with Atlassian Connect extend Atlassian applications over standard web protocols and APIs.
+`atlassian-connect-express` is a toolkit for creating [Atlassian Connect](https://developer.atlassian.com/display/AC/Atlassian+Connect) based Add-ons 
+with [Node.js](http://nodejs.org/). Atlassian Connect is a distributed component model for creating Atlassian add-ons. Add-ons built with Atlassian 
+Connect extend Atlassian applications over standard web protocols and APIs.
+
+**Please ensure you always use the latest patch version of atlassian-connect-express to ensure your add-on has the latest security patches and fixes. Versions prior to 1.0.14 and 2.0.2 have a known security vulnerability.**
+
+`atlassian-connect-express` is the **officially supported** Node.js framework for Atlassian Connect. Please read our documentation to see the other 
+supported and community provided [Frameworks and Tools](https://developer.atlassian.com/static/connect/docs/latest/developing/frameworks-and-tools.html). 
+You will find the recommended tools extremely useful when writing your own Atlassian Connect add-ons; be sure to peruse the list of tools and use them 
+as much as possible to aid development.
 
 ## More about `atlassian-connect-express`
 
 The `atlassian-connect-express` package helps you get started developing add-ons quickly, using Node.js and Express as the add-on server.
 
-It's important to understand that [Express](http://expressjs.com/) by itself is a web app framework for Node. `atlassian-connect-express` just provides a library of middleware and convenience helpers that make it easier to build Atlassian add-ons. Specifically, `atlassian-connect-express` adds:
+It's important to understand that [Express](http://expressjs.com/) by itself is a web app framework for Node. `atlassian-connect-express` just provides 
+a library of middleware and convenience helpers that make it easier to build Atlassian add-ons. Specifically, `atlassian-connect-express` adds:
 
 * An optimized dev loop by handling registration and deregistration on the target Atlassian application for you at startup and shutdown
 * A filesystem watcher that detects changes to `atlassian-connect.json`. When changes are detected, the add-on is re-registered with the host(s)
 * Automatic JWT authentication of inbound requests as well as JWT signing for outbound requests back to the host
 * Automatic persistence of host details (i.e., client key, host public key, host base url, etc.)
 * Localtunnel'd server for testing with OnDemand instances
+
+## Release Notes
+
+For detailed release notes and upgrade guides, please see the [Release Notes](RELEASENOTES.md).
 
 ## Getting Started
 
@@ -28,27 +42,7 @@ Let's start by creating an add-on project:
 
     atlas-connect new <project_name>
 
-This creates a new project home directory with the following contents:
-
-    .
-    ├── Procfile
-    ├── README.md
-    ├── app.js
-    ├── atlassian-connect.json
-    ├── config.json
-    ├── package.json
-    ├── private-key.pem
-    ├── public
-    │   ├── css
-    │   │   └── addon.css
-    │   └── js
-    │       └── addon.js
-    ├── public-key.pem
-    ├── routes
-    │   └── index.js
-    └── views
-        ├── hello-world.hbs
-        └── layout.hbs
+This creates a new project in the current directory.
 
 ### Install dependencies
 
@@ -56,35 +50,21 @@ Change to the new project directory and install dependencies:
 
     npm install
 
-`atlassian-connect-express` requires Node.js v0.10.12 or greater to run.
+`atlassian-connect-express` requires Node.js v4.8.4 or later. Please also ensure you have relevant [security updates](https://nodejs.org/en/blog/vulnerability/) installed.
 
 ### Setting up a development environment
 
-At this point, you're all set to run your add-on, but you still need the target application (i.e., JIRA or Confluence)
-for your add-on. You have a few options:
-
-1. You can do all your development work locally using the [Atlassian SDK](https://marketplace.atlassian.com/search?q=%22atlassian+plugin+sdk%22).
-You can start a local instance of JIRA or Confluence by reading the [guide to developing locally](https://developer.atlassian.com/static/connect/docs/developing/developing-locally.html).
-2. Install the add-on in [an Atlassian OnDemand instance](https://developer.atlassian.com/static/connect/docs/developing/installing-in-ondemand.html).
-for more information.
+At this point, you're all set to run your add-on, but you still need to install it in JIRA Cloud or Confluence Cloud. You can install your new add-on in any JIRA Cloud or 
+Confluence Cloud site where you are an administrator, but usually it's best to create a new site for you to use during development. [Follow this link to sign up](http://go.atlassian.com/cloud-dev) 
+for a free development version of JIRA Cloud or Confluence Cloud.
 
 ### Running your Add-on Server
 
-If you've chosen the first option and have a local running instance of JIRA or Confluence, you're all set. Now all you
-need to do to run your add-on inside your local JIRA or Confluence instance is:
+In your project directory, run:
 
     node app.js
 
-This will boot up your Express server on the default port of 3000 and do the following:
-
-* Register your add-on's `atlassian-connect.json` (at <http://localhost:3000/atlassian-connect.json>) with the host
-* Start watching for changes to your `atlassian-connect.json`. If the file is modified, `atlassian-connect-express` will
-re-register your add-on with the host.
-
-The created project already contains a sample atlassian-connect.json file which adds a "Hello World" general page to
-your local running JIRA or Confluence instance. To ensure that everything is working as expected, navigate to your local
-running instance and check that a "Hello World" link is present in the application's header and displays a "Hello World"
-page when clicked.
+This will boot up your Express server on the default port of 3000.
 
 ### The Dev Loop
 
@@ -92,8 +72,19 @@ At this point, you can start building your add-on. Changes to views load automat
 any JavaScript, you need to restart Express. If you want your server to automatically restart when your JavaScript
 changes, consider using [nodemon](https://npmjs.org/package/nodemon) or the like.
 
-As you've noticed, `atlassian-connect-express` automatically registers your add-on with the target application when it's
-started. Another nice feature is that it automatically de-registers it at shutdown `<ctrl-c>`.
+#### Automatic Registration
+
+This section will describe how to configure ACE so that it can automatically register your add-on with your Atlassian 
+Cloud development instance, re-register on changes to the descriptor, and de-register on shut down.
+
+To get this functionality, you will need to:
+
+* Create a file called `credentials.json`,
+* Copy and paste the contents of [this file](https://bitbucket.org/atlassian/atlassian-connect-express-template/src/master/credentials.json.sample),
+* Add `credentials.json` to the `.gitignore` file, and
+* Change the contents of the file to contain the link to your Cloud Development environment, admin authentication, and product
+
+ACE will now read this file and automatically create an [ngrok](https://ngrok.com/) tunnel, and register your add-on on your development instance.
 
 ### Configuration
 
@@ -104,10 +95,13 @@ comments to help you understand available settings.
 * `./atlassian-connect.json` -- This file is a manifest of all the extension points your add-on uses. To see all of the
 available extension point options, check out the modules sections of the [atlassian-connect documentation](https://developer.atlassian.com/static/connect/docs/).
 
+The behaviour of your add-on can be further configured by setting the `AC_OPTS` environment variable (see the end of this section).
+
 #### config.json
 
 The `./config.json` file contains all of the settings for the add-on server. This file is broken into environments.
 
+```javascript
     {
       // set to true if your app contains a errorHandler middleware
       // see http://expressjs.com/guide.html#error-handling
@@ -165,17 +159,6 @@ The `./config.json` file contains all of the settings for the add-on server. Thi
         //  "dependencies": {
         //    "jugglingdb-postgres": "0.0.4"
         //  }
-        //
-        // Your add-on will be registered with the following hosts upon startup.
-        // In order to take advantage of the automatic registration/deregistration,
-        // you need to make sure that your express app calls `addon.register()`
-        // (see app.js). Also, you don't need to specify the user/pwd in the URL
-        // as in the examples below. If you don't provide a user/pwd, you will be
-        // prompted the first time you start the server.
-        "hosts": [
-          "http://admin:admin@localhost:1990/confluence",
-          "http://admin:admin@localhost:2990/jira"
-        ]
       },
 
       // This is the production add-on configuration, which is enabled by setting
@@ -207,6 +190,25 @@ The `./config.json` file contains all of the settings for the add-on server. Thi
         ]
       }
     }
+```
+
+#### AC_OPTS
+
+The AC_OPTS environment variable can be used to change the behaviour of ACE for ease of development, like so:
+
+```
+AC_OPTS=no-auth,force-reg node app.js
+```
+
+Set it to a space- or comma-delimited list containing one or more of the following values.
+
+**force-reg** Make the add-on always register itself with running JIRAs & Confluences when it starts up (normally auto-registration only happens if the add-on is using a memory store).
+
+**force-dereg** Make the add-on always de-register itself with running JIRAs & Confluences on shutdown (normally auto-registration only happens if the add-on is using a memory store or running in development mode).
+
+**no-reg** Make the add-on never register itself with running JIRAs & Confluences (i.e. don't auto-register even if a memory store is being used).
+
+**no-auth** Skip authentication of incoming requests (i.e. don't check for or validate JWT tokens).
 
 ### atlassian-connect.json
 
@@ -222,27 +224,29 @@ If you need a pre-processing step to your descriptor, you can configure one by c
 so that a transformer is included in the `config`. The `descriptorTransformer` property expects to be a
 function and passes in `descriptor` as an object, and the `app.config` object.
 
+```javascript
     var addon = ac(app, { config: {
-      descriptorTransformer: function(descriptor, config) {
-        if (config.environment() === "production")
-          descriptor.key = "production-key";
-        return descriptor;
+        descriptorTransformer: function(descriptor, config) {
+          if (config.environment() === "production") {
+              descriptor.key = "production-key";
+          }
+          return descriptor;
       }
     }});
+```
 
 ## Sample Add-ons using `atlassian-connect-express`
 
-* [Sequence Diagramr](https://bitbucket.org/atlassianlabs/atlassian-connect-confluence-sequence-diagramr) -- a simple
-Confluence remote macro for creating UML sequence diagrams
+* [JIRA Example](https://bitbucket.org/atlassianlabs/atlassian-connect-jira-example) -- a simple JIRA example add-on
+* [Confluence Example](https://bitbucket.org/atlassianlabs/atlassian-connect-confluence-example) -- a simple Confluence example add-on
+* [Sequence Diagramr](https://bitbucket.org/atlassianlabs/atlassian-connect-confluence-sequence-diagramr) -- an add-on with a Confluence remote macro for creating UML sequence diagrams
 * [Confluence Word Cloud](https://bitbucket.org/atlassianlabs/atlassian-connect-confluence-word-cloud) -- a macro that
 takes the contents of a page and constructs an SVG-based word cloud
-* [Atlassian Connect Webhook Inspector](https://bitbucket.org/atlassianlabs/webhook-inspector) -- a simple tool to log
-webhooks fired in Atlassian apps for development purposes.
 
 ## The `atlassian-connect-express` scaffold
 
 When you generate a new `atlassian-connect-express` add-on, you're actually just downloading a copy of the
-[Atlassian Connect Expressjs template](https://bitbucket.org/atlassian/atlassian-connect-express-template/).
+[Atlassian Connect for Express.js template](https://bitbucket.org/atlassian/atlassian-connect-express-template/).
 
 ### Handlebars layouts and templates
 
@@ -262,7 +266,7 @@ To learn more about how Handlebars works in express.js, take a look at the [expr
 of these within your templates:
 
 * `title`: the add-on's name (derived from `atlassian-connect.json`)
-* `appKey`: the application key defined in `atlassian-connect.json`
+* `addonKey`: the add-on key defined in `atlassian-connect.json`
 * `localBaseUrl`: the base URI of the add-on
 * `hostBaseUrl`: the base URI of the target application (includes the context path if available)
 * `hostStylesheetUrl`: the URL to the base CSS file for Connect add-ons. This stylesheet is a bare minimum set of styles
@@ -284,6 +288,7 @@ that links elsewhere in the host:
 Add-ons are authenticated through JWT. To simplify JWT verification on your routes, you can simply add a
 `atlassian-connect-express` middleware to your route:
 
+```javascript
     module.exports = function (app, addon) {
         app.get('/protected-resource',
 
@@ -295,6 +300,7 @@ Add-ons are authenticated through JWT. To simplify JWT verification on your rout
             }
         );
     };
+```
 
 Simply adding the `addon.authenticate()` middleware will protect your resource.
 
@@ -305,11 +311,10 @@ sign subsequent requests. A typical example is content that makes AJAX calls bac
 be used, as many browsers block third-party cookies by default. `atlassian-connect-express` provides middleware that
 works without cookies and helps making secure requests from the iframe.
 
-#### In ACE 1.0
+Standard JWT tokens are used to authenticate requests from the iframe back to the add-on service. A route can be secured 
+using the `addon.checkValidToken()` middleware:
 
-Starting with ACE 1.0, standard JWT tokens are used to authenticate requests from the iframe back to the add-on
-service. A route can be secured using the `addon.checkValidToken()` middleware:
-
+```javascript
     module.exports = function (app, addon) {
         app.get('/protected-resource',
 
@@ -321,6 +326,7 @@ service. A route can be secured using the `addon.checkValidToken()` middleware:
             }
         );
     };
+```
 
 In order to secure your route, the token must be part of the HTTP request back to the add-on service. This can be done
 by using the standard `jwt` query parameter:
@@ -329,78 +335,56 @@ by using the standard `jwt` query parameter:
 
 The second option is to use the Authorization HTTP header, e.g. for AJAX requests:
 
+```javascript
     beforeSend: function (request) {
         request.setRequestHeader("Authorization", "JWT {{token}}");
     }
+```
 
 You can embed the token anywhere in your iframe content using the `token` content variable. For example, you can embed
 it in a meta tag, from where it can later be read by a script:
 
     <meta name="token" content="{{token}}">
 
-#### In ACE 0.9.x
-
-A route can be secured by adding the `checkValidToken` middleware:
-
-    module.exports = function (app, addon) {
-        app.get('/protected-resource',
-
-            // Require a valid token to access this resource
-            addon.checkValidToken(),
-
-            function(req, res) {
-              res.render('protected');
-            }
-        );
-    };
-
-In order to secure your route, the token must be part of the HTTP request back to the add-on service. This can be done
-by using a query parameter:
-
-    <a href="/protected-resource?acpt={{token}}">See more</a>
-
-The second option is to use an HTTP header, e.g. for AJAX requests:
-
-    beforeSend: function (request) {
-        request.setRequestHeader("X-acpt", {{token}});
-    }
-
-You can embed the token anywhere in your iframe content using the `token` content variable. For example, you can embed
-it in a meta tag, from where it can later be read by a script:
-
-    <meta name="acpt" content="{{token}}">
-
-Both the query parameter `acpt` and the HTTP request header `X-acpt` are automatically recognized and handled by
-`atlassian-connect-express` when a route is secured with the token middleware. The token remains valid for 15 minutes
-by default, and is automatically refreshed on each call. The expiration of the token can be configured using
-`maxTokenAge` (in seconds).
-
-
 ### How to send a signed outbound HTTP request back to the host
 
 `atlassian-connect-express` bundles and extends the [request](https://github.com/mikeal/request) HTTP client. To make a
-JWT signed request back to the host, all you have to do is use `request` the way it was designed, but use a relative
-path as your URL back to the host's REST APIs. If `request` finds that you're using a relative URL, it will get signed.
-If you use an absolute URL, it bypasses signing.
+JWT signed request back to the host, all you have to do is use `request` the way it was designed, but use a URL back to the host's REST APIs.
 
+```javascript
     var httpClient = addon.httpClient(req);
-    httpClient.get('/', function(err, res, body){
+    httpClient.get('/', function(err, res, body) {
       ...
     });
+```
 
 If not in a request context, you can perform the equivalent operation as follows:
 
+```javascript
     var httpClient = addon.httpClient({
       clientKey: clientKey, // the unique client key of the tenant to make a request to
-      userId: userId,
-      appKey: appKey
+      addonKey: addonKey
     });
-    httpClient.get('/', function(err, res, body){
+    httpClient.get('/', function(err, res, body) {
       ...
     });
+```
+
+By default, these requests are authenticated as the add-on. If you would like to make a request as a specific user, the
+`#asUser()` method should be used. Under the covers, an OAuth2 bearer token will be retrieved for the user you've requested.
+
+```javascript
+    var httpClient = addon.httpClient(req);
+    httpClient.asUser('barney').get('/rest/api/latest/myself', function (err, res, body) {
+      ...
+    })
+```
+
+Ensure you pass the `userKey` value into the method, and not the username.
 
 You can also set custom headers or send a form data. Take, for example this request which attaches a file to a JIRA issue
 
+```javascript
     var filePath = path.join(__dirname, 'some.png');
     fs.readFile(filePath, function (err, data) {
         httpClient.post({
@@ -419,6 +403,7 @@ You can also set custom headers or send a form data. Take, for example this requ
             console.log('Upload successful:', body);
         });
     });
+```
 
 ### Using the product REST API
 
@@ -432,6 +417,7 @@ Before you start, install Git and the [Heroku Toolbelt](https://toolbelt.heroku.
 If you aren't using git to track your add-on, now is a good time to do so as it is required for Heroku. Ensure you are
 in your project home directory and run the following commands:
 
+```bash
 	git config --global user.name "John Doe"
 	git config --global user.email johndoe@example.com
 	ssh-keygen -t rsa
@@ -439,19 +425,11 @@ in your project home directory and run the following commands:
 	git add .
 	git commit . -m "some message"
 	heroku keys:add
+```
 
 Next, create the app on Heroku:
 
     heroku apps:create <add-on-name>
-
-Then set the public and private key as environment variables in Heroku (you don't ever want to commit these `*.pem`
-files into your scm). The two `.*pem` files were created in your project home directory when you ran the `atlas-connect new` command.
-
-    heroku config:set AC_PUBLIC_KEY="`cat public-key.pem`" --app <add-on-name>
-    heroku config:set AC_PRIVATE_KEY="`cat private-key.pem`" --app <add-on-name>
-
-We recommend that you don't use the automatically generated key pair in production. You can use any RSA key pair
-generation tool such as [JSEncrypt](http://travistidwell.com/jsencrypt/demo/) to generate a production key pair.
 
 Next, let's store our registration information in a Postgres database. In development, you were likely using the memory
 store. In production, you'll want to use a real database.
@@ -493,6 +471,10 @@ One way to debug this is to see what `hostname` returns:
 
 If it returns `localhost`, change it. On a OS X, you'll need to set a proper "Computer Name" in System Preferences > Sharing.
 
+### Problems starting up in heroku, message is: TypeError: Cannot read property 'forEach' of undefined
+
+Specify a node version of 5.12.0 in your package.json to work around [this issue](https://github.com/jugglingdb/postgres-adapter/issues/56#issuecomment-264286085).
+
 ### Debugging HTTP Traffic
 
 Several tools exist to help snoop the HTTP traffic between your add-on and the host server:
@@ -502,11 +484,17 @@ Several tools exist to help snoop the HTTP traffic between your add-on and the h
 * Try local TCP sniffing with [justniffer](http://justniffer.sourceforge.net/) by running something like
 `justniffer -i eth0 -r`, substituting the correct interface value
 
-## Getting Help or Support
+## Getting help
 
-You can get help by emailing <atlassian-connect-dev@googlegroups.com> or report bugs on our
-[JIRA](https://ecosystem.atlassian.net/browse/AC). If you want to learn more about Atlassian Connect, you can visit
-<https://developer.atlassian.com/static/connect/docs>.
+If you need help using Express, see the [API reference](https://expressjs.com/en/4x/api.html) or developer's guide.
+
+If you need help developing against Atlassian products, see the [Atlassian Developer](https://developer.atlassian.com/) site.
+
+If you need help using functionality provided by `atlassian-connect-express`, please ask in the
+[Atlassian Developer Community](https://community.developer.atlassian.com/).
+
+If you want to report a problem, please raise a support request in Atlassian Ecosystem's
+[Developer Service Desk](http://go.atlassian.com/ecosystem-developer-support).
 
 ## Contributing
 
